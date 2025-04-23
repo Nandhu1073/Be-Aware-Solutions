@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CyberSecure Email Phishing Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+ 
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top, #000000, #0f0f0f);
+      color: #00ffe7;
+      padding: 2rem;
+      text-align: center;
+    }
+ 
+    h1 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 12px #00ff00, 0 0 16px #00ff00, 0 0 20px #00ff00;
+    }
+ 
+    .question-box {
+      background: rgba(0, 255, 234, 0.08);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px #00ff00;
+      max-width: 800px;
+      margin: 2rem auto;
+      text-align: left;
+    }
+ 
+    .email-content {
+      background: #1a1a1a;
+      color: #b2fffb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      white-space: pre-line;
+      border: 1px solid #00ffe7;
+    }
+ 
+    .btn-group {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+ 
+    button {
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: 2px solid #00ff00;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: black;
+      color: #00ff00;
+      text-shadow: 0 0 8px #00ff00;
+      transition: all 0.3s;
+    }
+ 
+    button:hover {
+      background: #00ff00;
+      color: black;
+      text-shadow: none;
+    }
+ 
+    .score, .feedback, .explanation {
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+ 
+    .feedback.correct {
+      color: #00ff00;
+    }
+ 
+    .feedback.wrong {
+      color: #ff4081;
+    }
+ 
+    .score {
+      font-size: 1.2rem;
+      color: #00ffe7;
+    }
+ 
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 600px;
+      background: linear-gradient(to bottom right, #003300, #004d00);
+      color: #ccffcc;
+      border: 4px solid #00ff00;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px #00ff00;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      z-index: 9999;
+      text-align: center;
+    }
+ 
+    .popup h2 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+    }
+ 
+    .popup p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+ 
+    .popup ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+ 
+    .popup ul li {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+ 
+    .badge-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10000;
+    }
+ 
+    .badge-circle {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00ffcc, #006666);
+      color: #000;
+      font-family: 'Orbitron', sans-serif;
+      border: 10px solid gold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 1rem;
+      box-shadow: 0 0 30px gold;
+    }
+ 
+    .badge-circle h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #003300;
+    }
+ 
+    .badge-circle h3 {
+      margin: 0.5rem 0;
+      font-size: 1.3rem;
+      color: #001a00;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛡️ CyberSecure: Email Phishing Challenge</h1>
+  <p>Decide whether the email is <strong>Phishing</strong> or <strong>Legit</strong>. Learn and earn your cyber certificate!</p>
+ 
+  <div class="question-box">
+    <div class="email-content" id="email-text">Loading email...</div>
+    <div class="btn-group">
+      <button onclick="checkAnswer(true)">Phishing</button>
+      <button onclick="checkAnswer(false)">Legit</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+    <div id="explanation" class="explanation"></div>
+    <div id="score" class="score">Score: 0</div>
+  </div>
+ 
+  <div class="popup" id="popup">
+    <h2 id="popup-message">🎉 Certificate Unlocked!</h2>
+    <p id="popup-subtext">You've proven your cyber instincts!</p>
+    <ul id="skills-earned" style="display: none;">
+      <li>✅ Identifying suspicious links</li>
+      <li>✅ Spotting urgency and threats</li>
+      <li>✅ Evaluating professional tone</li>
+    </ul>
+    <button onclick="closePopup()">Close</button>
+    <button id="download-btn" style="display: none;" onclick="openNamePopup()">Download Certificate</button>
+  </div>
+ 
+  <div class="popup" id="namePopup">
+    <h2>🎓 Enter Your Name</h2>
+    <input type="text" id="username" placeholder="Your full name" style="padding: 0.5rem; font-size: 1rem; border-radius: 0.5rem; border: none; width: 80%; margin-bottom: 1rem;">
+    <div style="display: flex; gap: 1rem;">
+      <button onclick="generateCertificate()">OK</button>
+      <button onclick="closeNamePopup()">Close</button>
+    </div>
+  </div>
+ 
+  <div class="badge-container" id="badge" style="display: none;">
+    <div class="badge-circle" id="badge-content">
+      <h2>CyberSecure<br>Badge</h2>
+      <p>🏅 Awarded to</p>
+      <h3 id="badge-name"></h3>
+      <p style="font-size: 0.8rem;">BeAware Academy · April 2025</p>
+    </div>
+  </div>
+ 
+  <!-- html2canvas CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+ 
+  <script>
+    const questions = [
+      {
+        text: `Subject: Immediate Action Required - Account Lock\n\nDear Customer,\n\nYour bank account has been locked due to multiple failed login attempts. To unlock it, click the link below and verify your information:\nhttp://secure.bank-update.com\n\nIf you do not respond in 24 hours, your account will be permanently disabled.\n\n- Bank Security`,
+        isPhishing: true,
+        explanation: "⚠️ Phishing: Threatening language, fake link, and urgency are clear signs."
+      },
+      {
+        text: `Subject: Meeting Reminder - Project Phoenix\n\nHi Mark,\n\nJust a reminder about our strategy sync tomorrow at 10am. Let me know if you'd like to add anything to the agenda.\n\nBest,\nSarah`,
+        isPhishing: false,
+        explanation: "✅ Legit: Professional tone, internal email, no links or pressure."
+      },
+      {
+        text: `Subject: 🎁 You’ve Won an iPhone 15!\n\nCongratulations! You're our lucky visitor today. Click here to claim your free iPhone:\nhttp://free-prize-now.com\n\nOffer expires in 2 hours. Act fast!`,
+        isPhishing: true,
+        explanation: "⚠️ Phishing: Too-good-to-be-true offer and fake reward links are common tricks."
+      }
+    ];
+ 
+    let current = 0;
+    let score = 0;
+ 
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById("email-text").innerText = questions[current].text;
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("explanation").innerText = "";
+      } else {
+        checkFinalScore();
+      }
+    }
+ 
+    function checkAnswer(userChoice) {
+      const correct = questions[current].isPhishing === userChoice;
+ 
+      if (correct) {
+        document.getElementById("feedback").innerText = "✅ Correct!";
+        document.getElementById("feedback").className = "feedback correct";
+        score++;
+      } else {
+        document.getElementById("feedback").innerText = "❌ Incorrect.";
+        document.getElementById("feedback").className = "feedback wrong";
+      }
+ 
+      document.getElementById("explanation").innerText = questions[current].explanation;
+      document.getElementById("score").innerText = "Score: " + score;
+ 
+      current++;
+      setTimeout(showQuestion, 2500);
+    }
+ 
+    function checkFinalScore() {
+      document.getElementById("email-text").innerText = `🎯 Game Over! Final Score: ${score} / ${questions.length}`;
+      document.querySelectorAll(".btn-group button").forEach(btn => btn.style.display = "none");
+ 
+      const popup = document.getElementById("popup");
+      const msg = document.getElementById("popup-message");
+      const subtext = document.getElementById("popup-subtext");
+      const skills = document.getElementById("skills-earned");
+      const downloadBtn = document.getElementById("download-btn");
+ 
+      if (score === questions.length) {
+        msg.innerText = "🎉 Congratulations!";
+        subtext.innerText = "You've earned the following skills:";
+        skills.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+      } else {
+        msg.innerText = "⚠️ Not Eligible";
+        subtext.innerText = "Try again to earn your certificate.";
+        skills.style.display = "none";
+        downloadBtn.style.display = "none";
+      }
+ 
+      popup.style.display = "flex";
+    }
+ 
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+ 
+    function openNamePopup() {
+      document.getElementById("namePopup").style.display = "flex";
+    }
+ 
+    function closeNamePopup() {
+      document.getElementById("namePopup").style.display = "none";
+    }
+ 
+    function generateCertificate() {
+      const name = document.getElementById("username").value.trim();
+      if (name === "") {
+        alert("Please enter your name.");
+        return;
+      }
+      document.getElementById("namePopup").style.display = "none";
+      document.getElementById("badge-name").innerText = name;
+      const badgeDiv = document.getElementById("badge");
+      badgeDiv.style.display = "block";
+ 
+      // Download as PNG
+      setTimeout(() => {
+        html2canvas(document.getElementById("badge-content")).then(canvas => {
+          const link = document.createElement("a");
+          link.download = "CyberBadge_" + name.replace(/\s+/g, "_") + ".png";
+          link.href = canvas.toDataURL();
+          link.click();
+ 
+          // Close the badge popup after download
+          badgeDiv.style.display = "none";
+        });
+      }, 500);
+    }
+ 
+    showQuestion();
+  </script>
+</body>
+</html>

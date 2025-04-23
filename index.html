@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeAware Academy - Cybersecurity Training</title>
+    <link rel="icon" type="image/x-icon" href="images/Favicon.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Be-Aware Academy</div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-btn">Home</a></li>
+                <li><a href="#courses" class="nav-btn">Courses</a></li>
+                <li><a href="#features" class="nav-btn">Features</a></li>
+                <li>
+                    <a href="login.html" class="login-btn" style="display: inline-block; padding: 10px 20px; background: #00ff88; color: #0a0a1f; border-radius: 20px; text-decoration: none; font-weight: bold;">
+                        Login <i class="fas fa-sign-in-alt"></i>
+                    </a>
+                </li>
+                
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920') center/cover no-repeat;">
+            <h1>Master Cybersecurity Awareness</h1>
+            <p>Learn to identify and prevent phishing attacks and social engineering attempts</p>
+            <button class="cta-btn">Start Learning Now <i class="fas fa-arrow-right"></i></button>
+        </section>
+
+        <section id="courses">
+            <h2>Our Courses</h2>
+            <div class="course-grid">
+                <div class="course-card">
+                    <img src="images/Phishing basics.jpeg" alt="Phishing Basics">
+                    <h3>Phishing Basics</h3>
+                    <p>Learn the fundamentals of identifying phishing attempts</p>
+                    <a href="phishing-basics.html">
+                        <button class="enroll-btn">Enroll Now <i class="fas fa-graduation-cap"></i></button>
+                    </a>
+                </div>
+                <div class="course-card">
+                    <img src="images/Advanced Phishing Techniques.jpg" alt="Advanced Phishing">
+                    <h3>Advanced Phishing Techniques</h3>
+                    <p>Deep dive into sophisticated phishing methods</p>
+                    <a href="advanced-phishing.html">
+                        <button class="enroll-btn">Enroll Now <i class="fas fa-graduation-cap"></i></button>
+                    </a>
+                </div>
+                <div class="course-card">
+                    <img src="images/Pretextig Defence.jpeg" alt="Pretexting">
+                    <h3>Pretexting Defense</h3>
+                    <p>Understanding and preventing social engineering</p>
+                    <a href="pretexting-defence.html">
+                        <button class="enroll-btn">Enroll Now <i class="fas fa-graduation-cap"></i></button>
+                    </a>
+                </div>
+               
+        </section>
+
+        <section id="features">
+            <h2>Why Choose Us?</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Certified Courses</h3>
+                    <p>Industry-recognized certification upon completion</p>
+                </div>
+                <div class="feature" onclick="window.location.href='team.html'" style="cursor: pointer;">
+                    <i class="fas fa-users"></i>
+                    <h3>Expert Instructors</h3>
+                    <p>Learn from cybersecurity professionals</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Hands-on Practice</h3>
+                    <p>Real-world scenarios and exercises</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>BeAware Academy is dedicated to providing world-class cybersecurity education, specializing in phishing prevention and social engineering awareness.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#careers">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p><i class="fas fa-envelope"></i> info@beaware.com</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Cyber Street, Tech City, TC 12345</p>
+                <button class="contact-btn">Send Message <i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Subscribe to our newsletter for the latest updates and cybersecurity tips.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Enter your email">
+                    <button type="submit">Subscribe <i class="fas fa-envelope"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 BeAware Academy. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#sitemap">Sitemap</a> |
+                <a href="#accessibility">Accessibility</a> |
+                <a href="#cookie-policy">Cookie Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

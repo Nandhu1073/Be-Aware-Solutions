@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Attack Simulation</title>
+    <link rel="icon" type="image/x-icon" href="images/Favicon.jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff3366;
+            --secondary: #7000ff;
+            --dark: #0a0a1f;
+            --light: #ffffff;
+            --success: #00ff88;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+        }
+
+        .corporate-dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .activity-panel {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .email-client {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .email-header {
+            background: #f0f0f0;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .email-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .email-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .email-item:hover {
+            background: #f5f5f5;
+        }
+
+        .suspicious {
+            border-left: 3px solid var(--primary);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.9);
+            padding: 15px 30px;
+            border-radius: 30px;
+            display: none;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            background: rgba(255,255,255,0.1);
+            height: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .action-buttons {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            color: var(--success);
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(10,10,31,0.95);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            display: none;
+            z-index: 1000;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .activity-log {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9em;
+        }
+
+        .threat-level {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+
+        .high { background: var(--primary); }
+        .medium { background: #ffbb00; }
+        .low { background: var(--success); }
+    </style>
+</head>
+<body>
+    <div class="corporate-dashboard">
+        <div class="sidebar">
+            <h2>Security Console</h2>
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-value" id="threatCount">0</div>
+                    <div class="stat-label">Threats Detected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">Security Score</div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="scanNetwork()">Scan Network</button>
+                <button class="action-btn" onclick="updateFirewall()">Update Firewall</button>
+                <button class="action-btn" onclick="checkLogs()">Check Logs</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="email-client">
+                <div class="email-header">
+                    <h3>Corporate Email</h3>
+                </div>
+                <div class="email-list" id="emailList">
+                    
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="activity-panel">
+            <h3>Activity Log</h3>
+            <div class="activity-log" id="activityLog">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="threatModal">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <h2>Threat Detected!</h2>
+        <div id="modalContent"></div>
+        <div class="action-buttons">
+            <button class="action-btn" onclick="handleThreat('block')">Block Threat</button>
+            <button class="action-btn" onclick="handleThreat('investigate')">Investigate</button>
+            <button class="action-btn" onclick="handleThreat('ignore')">Ignore</button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        const threats = [
+            {
+                id: 1,
+                type: "Phishing Attempt",
+                severity: "high",
+                description: "Suspicious email attempting to gather login credentials",
+                sender: "security-update@corpmail.com",
+                subject: "Urgent: Password Reset Required"
+            },
+            {
+                id: 2,
+                type: "Data Exfiltration",
+                severity: "high",
+                description: "Unusual outbound data transfer detected",
+                sender: "external-partner@vendor-corp.com",
+                subject: "Updated Partnership Agreement"
+            },
+            {
+                id: 3,
+                type: "Suspicious Login",
+                severity: "medium",
+                description: "Multiple failed login attempts from unknown IP",
+                sender: "system@internal.corp",
+                subject: "System Alert: Login Activity"
+            }
+        ];
+
+        let currentThreat = 0;
+        let score = 0;
+        let detectedThreats = 0;
+
+        function initializeSimulation() {
+            updateEmailList();
+            updateStats();
+            addLogEntry("Simulation initialized", "low");
+        }
+
+        function updateEmailList() {
+            const emailList = document.getElementById('emailList');
+            emailList.innerHTML = '';
+
+            threats.forEach((threat, index) => {
+                const emailItem = document.createElement('div');
+                emailItem.className = `email-item ${index <= currentThreat ? 'suspicious' : ''}`;
+                emailItem.innerHTML = `
+                    <div><strong>From:</strong> ${threat.sender}</div>
+                    <div><strong>Subject:</strong> ${threat.subject}</div>
+                `;
+                emailItem.onclick = () => showThreat(index);
+                emailList.appendChild(emailItem);
+            });
+        }
+
+        function showThreat(index) {
+            const threat = threats[index];
+            const modal = document.getElementById('threatModal');
+            document.getElementById('modalContent').innerHTML = `
+                <p><strong>Type:</strong> ${threat.type}</p>
+                <p><strong>Severity:</strong> <span class="threat-level ${threat.severity}">${threat.severity}</span></p>
+                <p><strong>Description:</strong> ${threat.description}</p>
+            `;
+            modal.style.display = 'block';
+        }
+
+        function handleThreat(action) {
+            let points = 0;
+            let message = '';
+
+            switch(action) {
+                case 'block':
+                    points = 100;
+                    message = 'Threat successfully blocked!';
+                    break;
+                case 'investigate':
+                    points = 50;
+                    message = 'Investigation initiated...';
+                    break;
+                case 'ignore':
+                    points = -50;
+                    message = 'Warning: Threat ignored!';
+                    break;
+            }
+
+            score += points;
+            detectedThreats++;
+            currentThreat++;
+            
+            updateStats();
+            updateEmailList();
+            showNotification(message);
+            closeModal();
+            addLogEntry(`${message} (${points} points)`, threats[currentThreat-1].severity);
+
+            if (currentThreat >= threats.length) {
+                showFinalScore();
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function updateStats() {
+            document.getElementById('threatCount').textContent = detectedThreats;
+            document.getElementById('score').textContent = score;
+            document.getElementById('progressBar').style.width = 
+                `${(currentThreat / threats.length) * 100}%`;
+        }
+
+        function addLogEntry(message, severity) {
+            const log = document.getElementById('activityLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                ${message}
+                <span class="threat-level ${severity}">${severity}</span>
+            `;
+            log.insertBefore(entry, log.firstChild);
+        }
+
+        function closeModal() {
+            document.getElementById('threatModal').style.display = 'none';
+        }
+
+        function scanNetwork() {
+            showNotification('Network scan in progress...');
+            addLogEntry('Network scan initiated', 'low');
+        }
+
+        function updateFirewall() {
+            showNotification('Firewall rules updated');
+            addLogEntry('Firewall rules updated', 'low');
+        }
+
+        function checkLogs() {
+            showNotification('System logs checked');
+            addLogEntry('Log check completed', 'low');
+        }
+
+        function showFinalScore() {
+            const modal = document.getElementById('threatModal');
+            document.getElementById('modalContent').innerHTML = `
+                <h3>Simulation Complete!</h3>
+                <p>Final Score: ${score}</p>
+                <p>Threats Detected: ${detectedThreats}</p>
+                <p>Performance Rating: ${getRating()}</p>
+            `;
+            modal.style.display = 'block';
+        }
+
+        function getRating() {
+            if (score >= 250) return 'Security Expert 🏆';
+            if (score >= 150) return 'Security Analyst 🛡️';
+            return 'Security Trainee 🎯';
+        }
+
+        // Initialize the simulation
+        initializeSimulation();
+    </script>
+</body>
+</html>

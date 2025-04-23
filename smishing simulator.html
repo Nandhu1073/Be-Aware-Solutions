@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CyberSecure Smishing Game</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top, #000000, #0f0f0f);
+      color: #00ffe7;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 12px #00ff00, 0 0 16px #00ff00, 0 0 20px #00ff00;
+    }
+
+    .question-box {
+      background: rgba(0, 255, 234, 0.08);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px #00ff00;
+      max-width: 800px;
+      margin: 2rem auto;
+      text-align: left;
+    }
+
+    .sms-content {
+      background: #1a1a1a;
+      color: #b2fffb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      white-space: pre-line;
+      border: 1px solid #00ffe7;
+    }
+
+    .btn-group {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    button {
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: 2px solid #00ff00;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: black;
+      color: #00ff00;
+      text-shadow: 0 0 8px #00ff00;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #00ff00;
+      color: black;
+      text-shadow: none;
+    }
+
+    .score, .feedback, .explanation {
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .feedback.correct {
+      color: #00ff00;
+    }
+
+    .feedback.wrong {
+      color: #ff4081;
+    }
+
+    .score {
+      font-size: 1.2rem;
+      color: #00ffe7;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 600px;
+      background: linear-gradient(to bottom right, #003300, #004d00);
+      color: #ccffcc;
+      border: 4px solid #00ff00;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px #00ff00;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .popup h2 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+    }
+
+    .popup p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .popup ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+
+    .popup ul li {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+
+    .popup button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: #00ff00;
+      color: black;
+      box-shadow: 0 0 10px #00ff00;
+      transition: background 0.3s ease;
+    }
+
+    .popup button:hover {
+      background: #ccffcc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛡️ CyberSecure: Smishing Challenge</h1>
+  <p>Decide whether the SMS message is <strong>Phishing</strong> or <strong>Legit</strong>. Learn and earn your cyber certificate!</p>
+
+  <div class="question-box">
+    <div class="sms-content" id="sms-text">Loading SMS...</div>
+
+    <div class="btn-group">
+      <button onclick="checkAnswer(true)">Phishing</button>
+      <button onclick="checkAnswer(false)">Legit</button>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <div id="explanation" class="explanation"></div>
+    <div id="score" class="score">Score: 0</div>
+  </div>
+
+  <!-- Certificate Popup -->
+  <div class="popup" id="popup">
+    <h2 id="popup-message">🎉 Certificate Unlocked!</h2>
+    <p id="popup-subtext">You've proven your cyber instincts!</p>
+    <ul id="skills-earned" style="display: none;">
+      <li>✅ Identifying suspicious links</li>
+      <li>✅ Spotting urgency and threats</li>
+      <li>✅ Recognizing fake rewards</li>
+    </ul>
+    <button onclick="closePopup()">Close</button>
+    <button id="download-btn" style="display: none;" onclick="downloadCertificate()">Download Certificate</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: `URGENT! Your account has been compromised. Click here to verify your details immediately: http://fake-link.com
+If you don’t act in 24 hours, your account will be locked!`,
+        isPhishing: true,
+        explanation: "⚠️ Smishing: Fake link, sense of urgency, and request for sensitive information are clear signs of phishing."
+      },
+      {
+        text: `Reminder: Your parcel from FedEx is on the way. Please visit fedex.com/track for more details.`,
+        isPhishing: false,
+        explanation: "✅ Legit: Professional tone, known service, and no suspicious links or urgent messages."
+      },
+      {
+        text: `Congrats! You’ve won a free iPhone! Visit http://fake-reward.com to claim your prize! Only 2 hours left to redeem!`,
+        isPhishing: true,
+        explanation: "⚠️ Smishing: Too-good-to-be-true offer, fake reward link, and urgency are common tricks."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById("sms-text").innerText = questions[current].text;
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("explanation").innerText = "";
+      } else {
+        checkFinalScore();
+      }
+    }
+
+    function checkAnswer(userChoice) {
+      const correct = questions[current].isPhishing === userChoice;
+
+      if (correct) {
+        document.getElementById("feedback").innerText = "✅ Correct!";
+        document.getElementById("feedback").className = "feedback correct";
+        score++;
+      } else {
+        document.getElementById("feedback").innerText = "❌ Incorrect.";
+        document.getElementById("feedback").className = "feedback wrong";
+      }
+
+      document.getElementById("explanation").innerText = questions[current].explanation;
+      document.getElementById("score").innerText = "Score: " + score;
+
+      current++;
+      setTimeout(showQuestion, 2500);
+    }
+
+    function checkFinalScore() {
+      document.getElementById("sms-text").innerText = `🎯 Game Over! Final Score: ${score} / ${questions.length}`;
+      document.querySelectorAll("button").forEach(btn => btn.style.display = "none");
+
+      const popup = document.getElementById("popup");
+      const msg = document.getElementById("popup-message");
+      const subtext = document.getElementById("popup-subtext");
+      const skills = document.getElementById("skills-earned");
+      const downloadBtn = document.getElementById("download-btn");
+
+      if (score === questions.length) {
+        msg.innerText = "🎉 Congratulations!";
+        subtext.innerText = "You've earned the following skills:";
+        skills.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+      } else {
+        msg.innerText = "⚠️ Not Eligible";
+        subtext.innerText = "Try again to earn your certificate.";
+        skills.style.display = "none";
+        downloadBtn.style.display = "none";
+      }
+
+      popup.style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    function downloadCertificate() {
+      alert("🎓 Your certificate will be available for download soon!");
+      
+    }
+
+    window.onload = showQuestion;
+  </script>
+</body>
+</html>

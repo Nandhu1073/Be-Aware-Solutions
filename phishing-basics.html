@@ -1,0 +1,528 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phishing Basics - BeAware Academy</title>
+  <link rel="icon" type="image/x-icon" href="images/Favicon.jpeg"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --neon-primary: #00ff88;
+      --neon-secondary: #7000ff;
+      --neon-text: #ffffff;
+      --dark-bg: #0a0a1f;
+      --card-bg: #141432;
+      --neon-border: #ff00ff;
+      --hover-highlight: rgba(0, 255, 136, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: var(--neon-text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background: var(--card-bg);
+      padding: 1rem 2rem;
+      border-bottom: 2px solid var(--neon-primary);
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      color: var(--neon-primary);
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: var(--neon-text);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--neon-primary);
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      background: var(--neon-primary);
+      color: var(--dark-bg);
+      box-shadow: 0 0 10px var(--neon-primary);
+    }
+
+    .course-content {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: var(--neon-primary);
+      margin-bottom: 2rem;
+    }
+
+    .module {
+      background: var(--card-bg);
+      border: 1px solid var(--neon-primary);
+      padding: 2rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .module h2 {
+      color: var(--neon-primary);
+      margin-bottom: 1rem;
+    }
+
+    .content-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 4px solid var(--neon-secondary);
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+    }
+
+    .attack-types {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .attack-type {
+      flex: 1 1 260px;
+      background: var(--card-bg);
+      border: 1px solid var(--neon-secondary);
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .attack-type:hover {
+      background-color: var(--hover-highlight);
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px var(--neon-secondary);
+    }
+
+    .complete-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--neon-primary);
+      border: 1px solid var(--neon-primary);
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: 0.3s;
+    }
+
+    .complete-btn:hover,
+    .complete-btn.completed {
+      background: var(--neon-primary);
+      color: var(--dark-bg);
+      box-shadow: 0 0 10px var(--neon-primary);
+    }
+
+    .modal,
+    .name-dialog {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content,
+    .name-dialog-content {
+      background: var(--dark-bg);
+      border: 2px solid var(--neon-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+      color: var(--neon-text);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--neon-primary);
+    }
+
+    .download-cert-btn,
+    .name-dialog button {
+      background: var(--neon-primary);
+      color: var(--dark-bg);
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      transition: 0.3s;
+    }
+
+    .download-cert-btn:hover,
+    .name-dialog button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+    }
+
+    input[type="text"] {
+      padding: 0.7rem;
+      width: 80%;
+      border: 1px solid var(--neon-primary);
+      background: transparent;
+      color: var(--neon-text);
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    ul {
+      text-align: left;
+      padding-left: 1.2rem;
+    }
+
+    ul li::marker {
+      color: var(--neon-primary);
+    }
+
+    /* Certificate specific styles */
+    .certificate-container {
+      background: var(--card-bg);
+      border: 2px solid var(--neon-primary);
+      border-radius: 10px;
+      padding: 1.5rem;
+      max-width: 550px;
+      margin: 0 auto;
+    }
+
+    .certificate-border {
+      border: 3px dashed var(--neon-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .certificate-title {
+      color: var(--neon-primary);
+      text-shadow: 0 0 10px var(--neon-primary);
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .certificate-name {
+      color: var(--neon-secondary);
+      font-size: 1.8rem;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      text-shadow: 0 0 8px var(--neon-secondary);
+    }
+
+    .certificate-details {
+      background: rgba(112, 0, 255, 0.1);
+      border-left: 4px solid var(--neon-secondary);
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+
+    .certificate-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+    }
+@media print {
+  body {
+    background: transparent !important;
+  }
+  .certificate-container {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+  .certificate-border {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">BeAware Academy</div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="nav-btn">Back to Home</a></li>
+    </ul>
+  </nav>
+
+  <div class="course-content">
+    <h1>Phishing Basics Course</h1>
+
+    <div class="module">
+      <h2>Module 1: Understanding Phishing</h2>
+      <div class="content-box">
+        <h3>🚨 What is Phishing?</h3>
+        <p>Phishing is a cybercrime where targets are contacted by email, telephone or text message by someone posing as a legitimate institution to lure individuals into providing sensitive data.</p>
+      </div>
+
+      <div class="attack-types">
+        <div class="attack-type" onclick="showEmailPhishingModal()">
+          <h4><i class="fas fa-envelope"></i> Email Phishing</h4>
+          <p>Mass emails with malicious links targeting large groups</p>
+        </div>
+        <div class="attack-type" onclick="showSpearPhishingModal()">
+          <h4><i class="fas fa-user-secret"></i> Spear Phishing</h4>
+          <p>Targeted attacks on specific individuals</p>
+        </div>
+        <div class="attack-type" onclick="showWhalingModal()">
+          <h4><i class="fas fa-crown"></i> Whaling</h4>
+          <p>Attacks aimed at executives</p>
+        </div>
+      </div>
+
+      <button class="complete-btn" onclick="markComplete(1)">
+        <i class="fas fa-check-circle"></i> Mark as Completed
+      </button>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div id="completionModal" class="modal">
+      <div class="modal-content">
+        <div class="certificate-container">
+          <div class="certificate-border">
+            <h1 class="certificate-title">🏆 Cyber Awareness Certificate</h1>
+            <p>This certifies that</p>
+            <h2 id="certificateName" class="certificate-name">[Your Name]</h2>
+            <p>has successfully completed the <strong>Phishing Basics Course</strong><br>by <span style="color: var(--neon-primary)">BeAware Academy</span></p>
+            
+            <div class="certificate-details">
+              <p style="font-weight: bold; text-align: center;">Skills & Topics Covered:</p>
+              <ul style="columns: 2; column-gap: 2rem;">
+                <li>Understanding Phishing</li>
+                <li>Identifying Red Flags</li>
+                <li>Practical Defense</li>
+                <li>Real-World Scenarios</li>
+                <li>Email Phishing Defense</li>
+                <li>Spear Phishing Awareness</li>
+                <li>Whaling Attack Prevention</li>
+                <li>Security Best Practices</li>
+              </ul>
+            </div>
+
+            <div class="certificate-footer">
+              <div>
+                <p><strong>Date:</strong> <span id="certDate"><script>document.write(new Date().toLocaleDateString());</script></span></p>
+                <p><strong>Certificate ID:</strong> BA-<script>document.write(Math.floor(Math.random() * 10000).toString().padStart(4, '0'));</script></p>
+              </div>
+              <div>
+                <p style="text-align: right;">BeAware Academy</p>
+              </div>
+            </div>
+
+            <button class="download-cert-btn" onclick="showNameDialog()">
+              <i class="fas fa-download"></i> Download Certificate
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attack Type Modals -->
+    <div id="emailPhishingModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('emailPhishingModal')">&times;</span>
+        <h1>Email Phishing Awareness</h1>
+        <p><strong>Phishing</strong> is a cyber threat where attackers impersonate trusted entities to steal personal data.</p>
+        <ul>
+          <li>Be cautious of unsolicited emails.</li>
+          <li>Never click suspicious links or attachments.</li>
+          <li>Verify the sender's email address.</li>
+          <li>Look for grammatical errors or unusual language.</li>
+          <li>Check if the email asks for sensitive information.</li>
+          <li>Use multi-factor authentication to add an extra layer of security.</li>
+          <li>Report phishing attempts to your IT team or email provider.</li>
+          <li>Regularly update passwords to enhance security.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="spearPhishingModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('spearPhishingModal')">&times;</span>
+        <h1>Spear Phishing Awareness</h1>
+        <p><strong>Spear Phishing</strong> is a targeted cyber attack where attackers impersonate specific individuals or organizations to steal sensitive information or access systems.</p>
+        <ul>
+          <li>Be cautious of emails that are highly personalized or seem to come from a trusted source.</li>
+          <li>Never click on suspicious links or open unexpected attachments.</li>
+          <li>Verify any requests for sensitive information by contacting the sender directly.</li>
+          <li>Look for signs of personalization that seem too accurate, like detailed knowledge about you or your company.</li>
+          <li>Be wary of emails asking for financial or sensitive information, especially when they seem urgent.</li>
+          <li>Ensure your security software is up-to-date to detect malicious attachments or links.</li>
+          <li>Be cautious when communicating with executives or senior personnel through email.</li>
+          <li>Report any suspicious emails to your IT department immediately.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="WhalingModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal('WhalingModal')">&times;</span>
+        <h2>Whaling: Executive Phishing Attacks</h2>
+        <p>Whaling is a highly targeted phishing attack aimed at senior executives like CEOs, CFOs, or other high-profile individuals within an organization.
+          These attacks often appear to come from trusted sources and can involve high-stakes requests such as urgent fund transfers, confidential data leaks,
+          or executive-level decision approvals.
+        </p>
+        <div class="content-box">
+          <h3>🎯 Characteristics of Whaling</h3>
+          <ul>
+            <li>Targets high-ranking individuals</li>
+            <li>Uses formal, personalized language and branding</li>
+            <li>Often mimics legal, financial, or executive-level communication</li>
+            <li>May contain fake invoices or urgent wire transfer requests</li>
+          </ul>
+        </div>
+        <div class="content-box">
+          <h3>🛡️ How to Defend Against Whaling</h3>
+          <ul>
+            <li>Implement strict verification protocols for sensitive requests</li>
+            <li>Train executives on phishing awareness and red flags</li>
+            <li>Use email authentication protocols like SPF, DKIM, and DMARC</li>
+            <li>Deploy multi-factor authentication (MFA)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Name Dialog -->
+    <div id="nameDialog" class="name-dialog">
+      <div class="name-dialog-content">
+        <h2>Enter Your Name</h2>
+        <input type="text" id="userName" placeholder="Your Name" />
+        <button onclick="downloadCertificate()">Download Certificate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showWhalingModal() {
+      document.getElementById('WhalingModal').style.display = 'flex';
+    }
+
+    function showEmailPhishingModal() {
+      document.getElementById('emailPhishingModal').style.display = 'flex';
+    }
+
+    function showSpearPhishingModal() {
+      document.getElementById('spearPhishingModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function markComplete(moduleNumber) {
+      document.querySelector('.complete-btn').classList.add('completed');
+      document.getElementById('completionModal').style.display = 'flex';
+    }
+
+    function showNameDialog() {
+      document.getElementById('nameDialog').style.display = 'flex';
+    }
+
+function downloadCertificate() {
+  var name = document.getElementById('userName').value;
+  if (name) {
+    document.getElementById('certificateName').innerText = name;
+    document.getElementById('nameDialog').style.display = 'none';
+
+    // Create a clone of the certificate container
+    var certContent = document.querySelector('.certificate-container').cloneNode(true);
+    
+    // Create a temporary container for PDF generation
+    var tempContainer = document.createElement('div');
+    tempContainer.style.width = '800px';
+    tempContainer.style.padding = '40px';
+    tempContainer.style.background = '#141432';
+    tempContainer.appendChild(certContent);
+
+    // PDF generation options
+    var options = {
+      filename: `Cyber_Awareness_Certificate_${name}.pdf`,
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait' 
+      },
+      html2canvas: { 
+        scale: 2,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight
+      },
+      pagebreak: { mode: 'avoid-all' }
+    };
+
+    // Generate PDF
+    html2pdf()
+      .set(options)
+      .from(tempContainer)
+      .save()
+      .then(() => {
+        // Remove temporary container after PDF generation
+        tempContainer.remove();
+      });
+  } else {
+    alert('Please enter your name first');
+  }
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pretexting Awareness Training Hub</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+        font-family: 'Orbitron', sans-serif;
+        background-image: url(images/background-1.jpg), radial-gradient(circle at top, #000000, #0f0f0f);
+        background-blend-mode: overlay;
+        background-size: cover;
+        background-attachment: fixed;
+        color: #00ffe7;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    h1 {
+        color: #00ff00;
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 12px #00ff00, 0 0 20px #00ff00;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        color: #b2fffb;
+    }
+
+    .game-card {
+        background: rgba(0, 255, 234, 0.06);
+        padding: 1.5rem;
+        margin: 2rem auto;
+        border-radius: 1rem;
+        width: 85%;
+        max-width: 650px;
+        box-shadow: 0 0 20px #00ffbf;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border: 1px solid #00ffe7;
+    }
+
+    .game-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 25px #00ffbf, 0 0 30px #00ffbf;
+    }
+
+    h2 {
+        color: #00ffbf;
+        margin-bottom: 0.5rem;
+        font-size: 1.8rem;
+        text-shadow: 0 0 10px #00ffe7;
+    }
+
+    a {
+        text-decoration: none;
+        color: black;
+        background: linear-gradient(to right, #00ffe7, #00ff88);
+        padding: 0.8rem 1.6rem;
+        border-radius: 0.5rem;
+        display: inline-block;
+        margin-top: 1.2rem;
+        font-weight: bold;
+        font-size: 1rem;
+        box-shadow: 0 0 10px #00ffe7;
+        transition: all 0.3s;
+    }
+
+    a:hover {
+        background: linear-gradient(to right, #00ff88, #00ffe7);
+        color: #000;
+        box-shadow: 0 0 16px #00ff88;
+    }
+
+    ul {
+        text-align: left;
+        margin: 0 auto;
+        max-width: 500px;
+        padding-left: 1.5rem;
+        color: #00ffe7;
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    strong {
+        display: block;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        color: #00ffbf;
+        font-size: 1.1rem;
+    }
+</style>
+</head>
+<body>
+<h1>🎭 Pretexting Awareness Training Hub</h1>
+<p>Explore each scenario to learn how cybercriminals impersonate trusted figures to gain sensitive information.</p>
+
+<div class="game-card">
+    <h2>💻 Tech Support Scam</h2>
+    <p>Identify attempts by fake IT agents pretending to fix your computer.</p>
+    <strong>Common Signs:</strong>
+    <ul>
+        <li>🛠️ Caller claims your device is infected or hacked</li>
+        <li>📥 Asks you to install "support tools" (malware)</li>
+        <li>🔐 Requests remote access or admin credentials</li>
+    </ul>
+    <a href="Tech Support Scam.html">Play Tech Support Scenario</a>
+</div>
+
+<div class="game-card">
+    <h2>🧑‍💼 HR Impersonation</h2>
+    <p>Learn how attackers impersonate HR personnel to trick employees.</p>
+    <strong>Example Tactics:</strong>
+    <ul>
+        <li>📄 Requests for sensitive personal data “to update records”</li>
+        <li>🪪 Fakes urgency related to benefits, taxes, or payroll</li>
+        <li>📧 Uses spoofed HR emails or fake forms</li>
+    </ul>
+    <a href="HR Impersonation.html">Play HR Pretexting Scenario</a>
+</div>
+
+<div class="game-card">
+    <h2>🖥️ IT Department Access Request</h2>
+    <p>Detect suspicious requests for access to internal systems.</p>
+    <strong>Warning Signs:</strong>
+    <ul>
+        <li>🔒 "Routine maintenance" access requests from unknown staff</li>
+        <li>🛑 No official communication or ticketing reference</li>
+        <li>💬 Vague or inconsistent details about the issue</li>
+    </ul>
+    <a href="IT Department Access.html">Play IT Access Scenario</a>
+</div>
+
+</body>
+</html>

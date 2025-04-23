@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CyberSecure Tech Support Scam Challenge</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top, #000000, #0f0f0f);
+      color: #00ffe7;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 12px #00ff00, 0 0 16px #00ff00, 0 0 20px #00ff00;
+    }
+
+    .question-box {
+      background: rgba(0, 255, 234, 0.08);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px #00ff00;
+      max-width: 800px;
+      margin: 2rem auto;
+      text-align: left;
+    }
+
+    .call-content {
+      background: #1a1a1a;
+      color: #b2fffb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      white-space: pre-line;
+      border: 1px solid #00ffe7;
+    }
+
+    .btn-group {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    button {
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: 2px solid #00ff00;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: black;
+      color: #00ff00;
+      text-shadow: 0 0 8px #00ff00;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #00ff00;
+      color: black;
+      text-shadow: none;
+    }
+
+    .score, .feedback, .explanation {
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .feedback.correct {
+      color: #00ff00;
+    }
+
+    .feedback.wrong {
+      color: #ff4081;
+    }
+
+    .score {
+      font-size: 1.2rem;
+      color: #00ffe7;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 600px;
+      background: linear-gradient(to bottom right, #003300, #004d00);
+      color: #ccffcc;
+      border: 4px solid #00ff00;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px #00ff00;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .popup h2 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+    }
+
+    .popup p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .popup ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+
+    .popup ul li {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+
+    .popup button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: #00ff00;
+      color: black;
+      box-shadow: 0 0 10px #00ff00;
+      transition: background 0.3s ease;
+    }
+
+    .popup button:hover {
+      background: #ccffcc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛠️ CyberSecure: Tech Support Scam Challenge</h1>
+  <p>Can you spot the fake tech support agents? Test your ability to detect scams where attackers impersonate IT professionals to gain access or install malware.</p>
+
+  <div class="question-box">
+    <div class="call-content" id="call-text">Loading scenario...</div>
+
+    <div class="btn-group">
+      <button onclick="checkAnswer(true)">Tech Support Scam</button>
+      <button onclick="checkAnswer(false)">Legit</button>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <div id="explanation" class="explanation"></div>
+    <div id="score" class="score">Score: 0</div>
+  </div>
+
+  <!-- Certificate Popup -->
+  <div class="popup" id="popup">
+    <h2 id="popup-message">🎉 Certificate Unlocked!</h2>
+    <p id="popup-subtext">You've proven your cyber instincts!</p>
+    <ul id="skills-earned" style="display: none;">
+      <li>✅ Recognizing fake support calls and pop-ups</li>
+      <li>✅ Verifying IT identity and protocols</li>
+      <li>✅ Avoiding remote access and credential theft</li>
+    </ul>
+    <button onclick="closePopup()">Close</button>
+    <button id="download-btn" style="display: none;" onclick="downloadCertificate()">Download Certificate</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: `Scenario: A pop-up appears on your screen saying “Your PC is infected! Call Microsoft support immediately at 1-800-FAKEHELP.”`,
+        isPretexting: true,
+        explanation: "⚠️ Scam: Legit companies don't use scare tactics via pop-ups. This is a remote access scam."
+      },
+      {
+        text: `Scenario: Someone calls claiming to be from your company's IT team and says they need to install a patch remotely. They ask for your admin password.`,
+        isPretexting: true,
+        explanation: "⚠️ Scam: Internal IT never asks for your password on a cold call. Always verify identity first."
+      },
+      {
+        text: `Scenario: You get an email from your company's IT department with details about a scheduled software upgrade. It includes a link to your internal ticketing system.`,
+        isPretexting: false,
+        explanation: "✅ Legit: Clear communication through official channels with no suspicious requests."
+      },
+      {
+        text: `Scenario: A technician shows up at your office saying they're from a 'third-party security vendor' hired by your company. No prior notice was given.`,
+        isPretexting: true,
+        explanation: "⚠️ Scam: Unannounced visits should always be verified with management or internal security."
+      },
+      {
+        text: `Scenario: You receive a call from someone who knows your name and says your computer is infected. They want you to install a 'security tool' to clean it.`,
+        isPretexting: true,
+        explanation: "⚠️ Scam: This is a social engineering trick to install malware or steal your info."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById("call-text").innerText = questions[current].text;
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("explanation").innerText = "";
+      } else {
+        checkFinalScore();
+      }
+    }
+
+    function checkAnswer(userChoice) {
+      const correct = questions[current].isPretexting === userChoice;
+
+      if (correct) {
+        document.getElementById("feedback").innerText = "✅ Correct!";
+        document.getElementById("feedback").className = "feedback correct";
+        score++;
+      } else {
+        document.getElementById("feedback").innerText = "❌ Incorrect.";
+        document.getElementById("feedback").className = "feedback wrong";
+      }
+
+      document.getElementById("explanation").innerText = questions[current].explanation;
+      document.getElementById("score").innerText = "Score: " + score;
+
+      current++;
+      setTimeout(showQuestion, 2500);
+    }
+
+    function checkFinalScore() {
+      document.getElementById("call-text").innerText = `🎯 Challenge Complete! Final Score: ${score} / ${questions.length}`;
+      document.querySelectorAll("button").forEach(btn => btn.style.display = "none");
+
+      const popup = document.getElementById("popup");
+      const msg = document.getElementById("popup-message");
+      const subtext = document.getElementById("popup-subtext");
+      const skills = document.getElementById("skills-earned");
+      const downloadBtn = document.getElementById("download-btn");
+
+      if (score === questions.length) {
+        msg.innerText = "🛡️ Tech Scam Terminator!";
+        subtext.innerText = "You've mastered spotting fake support agents.";
+        skills.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+      } else {
+        msg.innerText = "🧠 Almost There!";
+        subtext.innerText = "Review the red flags and try again.";
+        skills.style.display = "none";
+        downloadBtn.style.display = "none";
+      }
+
+      popup.style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    function downloadCertificate() {
+      alert("🎓 Your certificate will be available for download soon!");
+      // Add actual PDF generation here later
+    }
+
+    window.onload = showQuestion;
+  </script>
+</body>
+</html>

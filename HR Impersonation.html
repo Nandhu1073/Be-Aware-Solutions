@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CyberSecure HR Impersonation Challenge</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: radial-gradient(circle at top, #000000, #0f0f0f);
+      color: #00ffe7;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 12px #00ff00, 0 0 16px #00ff00, 0 0 20px #00ff00;
+    }
+
+    .question-box {
+      background: rgba(0, 255, 234, 0.08);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px #00ff00;
+      max-width: 800px;
+      margin: 2rem auto;
+      text-align: left;
+    }
+
+    .call-content {
+      background: #1a1a1a;
+      color: #b2fffb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      white-space: pre-line;
+      border: 1px solid #00ffe7;
+    }
+
+    .btn-group {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    button {
+      margin: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: 2px solid #00ff00;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: black;
+      color: #00ff00;
+      text-shadow: 0 0 8px #00ff00;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #00ff00;
+      color: black;
+      text-shadow: none;
+    }
+
+    .score, .feedback, .explanation {
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+
+    .feedback.correct {
+      color: #00ff00;
+    }
+
+    .feedback.wrong {
+      color: #ff4081;
+    }
+
+    .score {
+      font-size: 1.2rem;
+      color: #00ffe7;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 600px;
+      background: linear-gradient(to bottom right, #003300, #004d00);
+      color: #ccffcc;
+      border: 4px solid #00ff00;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px #00ff00;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .popup h2 {
+      font-size: 2.5rem;
+      color: #00ff00;
+      margin-bottom: 1rem;
+    }
+
+    .popup p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .popup ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+
+    .popup ul li {
+      font-size: 1.2rem;
+      margin: 0.5rem 0;
+    }
+
+    .popup button {
+      margin-top: 1.5rem;
+      padding: 0.75rem 2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      background: #00ff00;
+      color: black;
+      box-shadow: 0 0 10px #00ff00;
+      transition: background 0.3s ease;
+    }
+
+    .popup button:hover {
+      background: #ccffcc;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧑‍💼 CyberSecure: HR Impersonation Challenge</h1>
+  <p>Can you detect when someone is impersonating HR? Spot red flags where attackers pretend to be Human Resources to steal your data.</p>
+
+  <div class="question-box">
+    <div class="call-content" id="call-text">Loading scenario...</div>
+
+    <div class="btn-group">
+      <button onclick="checkAnswer(true)">HR Impersonation</button>
+      <button onclick="checkAnswer(false)">Legit</button>
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <div id="explanation" class="explanation"></div>
+    <div id="score" class="score">Score: 0</div>
+  </div>
+
+  <!-- Certificate Popup -->
+  <div class="popup" id="popup">
+    <h2 id="popup-message">🎉 Certificate Unlocked!</h2>
+    <p id="popup-subtext">You've shown excellent judgment!</p>
+    <ul id="skills-earned" style="display: none;">
+      <li>✅ Identifying fake HR requests and surveys</li>
+      <li>✅ Verifying employee onboarding communications</li>
+      <li>✅ Avoiding credential theft through HR scams</li>
+    </ul>
+    <button onclick="closePopup()">Close</button>
+    <button id="download-btn" style="display: none;" onclick="downloadCertificate()">Download Certificate</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: `Scenario: You receive an email from "HR Department" asking you to update your personal information via a Google Form.`,
+        isPretexting: true,
+        explanation: "⚠️ Scam: HR departments use secure portals—not public forms—to collect personal information."
+      },
+      {
+        text: `Scenario: A new hire onboarding message comes from a verified HR address and links to your internal employee portal.`,
+        isPretexting: false,
+        explanation: "✅ Legit: Trusted source, verified channel, and known portal make this safe."
+      },
+      {
+        text: `Scenario: Someone messages you on Slack pretending to be from HR, asking for your email password to process benefits.`,
+        isPretexting: true,
+        explanation: "⚠️ Scam: HR will never ask for your password. This is a phishing attempt."
+      },
+      {
+        text: `Scenario: You’re asked to click a link to update your tax documents, but the link leads to an unfamiliar external site.`,
+        isPretexting: true,
+        explanation: "⚠️ Scam: Always verify links. Sensitive tasks like tax updates should be done in official systems."
+      },
+      {
+        text: `Scenario: You receive a calendar invite from HR for a mandatory policy update, with a meeting link hosted on the company domain.`,
+        isPretexting: false,
+        explanation: "✅ Legit: Official communication, familiar platform, and internal scheduling."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById("call-text").innerText = questions[current].text;
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("explanation").innerText = "";
+      } else {
+        checkFinalScore();
+      }
+    }
+
+    function checkAnswer(userChoice) {
+      const correct = questions[current].isPretexting === userChoice;
+
+      if (correct) {
+        document.getElementById("feedback").innerText = "✅ Correct!";
+        document.getElementById("feedback").className = "feedback correct";
+        score++;
+      } else {
+        document.getElementById("feedback").innerText = "❌ Incorrect.";
+        document.getElementById("feedback").className = "feedback wrong";
+      }
+
+      document.getElementById("explanation").innerText = questions[current].explanation;
+      document.getElementById("score").innerText = "Score: " + score;
+
+      current++;
+      setTimeout(showQuestion, 2500);
+    }
+
+    function checkFinalScore() {
+      document.getElementById("call-text").innerText = `🎯 Challenge Complete! Final Score: ${score} / ${questions.length}`;
+      document.querySelectorAll("button").forEach(btn => btn.style.display = "none");
+
+      const popup = document.getElementById("popup");
+      const msg = document.getElementById("popup-message");
+      const subtext = document.getElementById("popup-subtext");
+      const skills = document.getElementById("skills-earned");
+      const downloadBtn = document.getElementById("download-btn");
+
+      if (score === questions.length) {
+        msg.innerText = "🛡️ HR Impersonation Defender!";
+        subtext.innerText = "You've mastered detecting fake HR communications.";
+        skills.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+      } else {
+        msg.innerText = "🧠 Almost There!";
+        subtext.innerText = "Review the tactics scammers use and try again.";
+        skills.style.display = "none";
+        downloadBtn.style.display = "none";
+      }
+
+      popup.style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    function downloadCertificate() {
+      alert("🎓 Your certificate will be available for download soon!");
+    }
+
+    window.onload = showQuestion;
+  </script>
+</body>
+</html>

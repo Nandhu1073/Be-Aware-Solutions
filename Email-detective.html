@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interactive Cybersecurity Training - BeAware Academy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #00f7ff;
+      --secondary: #b700ff;
+      --success: #00ff88;
+      --warning: #ffbb00;
+      --danger: #ff3366;
+      --dark: #0a0a1f;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: var(--dark);
+      color: white;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    nav {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .back-btn {
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .progress-bar {
+      width: 200px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: width 0.3s ease;
+    }
+    .score {
+      color: var(--success);
+      font-weight: bold;
+    }
+    .question-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 10px;
+      margin: 2rem 0;
+    }
+    .question-header {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .option-btn {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .option-btn:hover {
+      background: var(--primary);
+      color: var(--dark);
+    }
+    .feedback {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      display: none;
+    }
+    .certificate {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      color: var(--dark);
+      padding: 3rem;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 800px;
+      width: 90%;
+    }
+    .certificate-content {
+      border: 15px solid gold;
+      padding: 2rem;
+    }
+    .certificate h1 {
+      color: var(--secondary);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .certificate-seal {
+      width: 100px;
+      height: 100px;
+      margin: 1rem auto;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    @keyframes confetti {
+      0% { transform: translateY(-100%) rotate(0deg); }
+      100% { transform: translateY(100vh) rotate(360deg); }
+    }
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: var(--primary);
+      animation: confetti 5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    <div class="progress-container">
+      <div class="progress-bar"><div class="progress" id="progressBar"></div></div>
+      <div class="score">Score: <span id="scoreDisplay">0</span></div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="question-container">
+      <div class="question-header">
+        <h2 id="questionTitle">Question 1</h2>
+        <p id="questionDescription">Analyze the following email for potential threats:</p>
+      </div>
+      <div class="question-content" id="questionContent"></div>
+      <div class="options-grid">
+        <button class="option-btn" onclick="checkEmail()"><i class="fas fa-search"></i> Check Email Headers</button>
+        <button class="option-btn" onclick="analyzeLinks()"><i class="fas fa-link"></i> Analyze Links</button>
+        <button class="option-btn" onclick="scanAttachments()"><i class="fas fa-paperclip"></i> Scan Attachments</button>
+        <button class="option-btn" onclick="verifySource()"><i class="fas fa-shield-alt"></i> Verify Source</button>
+      </div>
+      <div class="decision-buttons">
+        <button class="option-btn" style="background: var(--success);" onclick="markSafe()">
+          <i class="fas fa-check-circle"></i> Mark as Safe
+        </button>
+        <button class="option-btn" style="background: var(--danger); color: white;" onclick="markPhishing()">
+          <i class="fas fa-exclamation-triangle"></i> Flag as Phishing
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certificate -->
+  <div class="feedback" id="feedback"></div>
+  <div class="certificate" id="certificate">
+    <div class="certificate-content">
+      <h1>Certificate of Achievement</h1>
+      <div class="certificate-seal"><i class="fas fa-shield-alt"></i></div>
+      <p>This certifies that</p>
+      <h2 id="userName">Cybersecurity Expert</h2>
+      <p>has successfully completed</p>
+      <h3>Advanced Phishing Detection Training</h3>
+      <p>with excellence in identifying cyber threats</p>
+      <div class="date" id="certDate"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentScore = 0;
+    let currentQuestion = 0;
+    let allCorrect = true;
+
+    const questions = [
+      {
+        title: "Suspicious Bank Email",
+        content: `From: security@bankofamerica.com<br>Subject: Urgent Account Verification Required<br><br>Dear Valued Customer,<br><br>We have detected unusual activity in your account. Please verify your identity immediately by clicking the following link:<br><br><a href="#">https://secure.bank0famerica.com-verify.net</a><br><br>Your account will be suspended if not verified within 24 hours.<br><br>Bank of America Security Team`,
+        isPhishing: true
+      },
+      {
+        title: "Company IT Update",
+        content: `From: it.support@company-internal.com<br>Subject: Mandatory Security Update<br><br>Dear Employee,<br><br>Please install the attached security update immediately:<br><br><em>[SecurityUpdate.exe]</em><br><br>This is required to maintain system security.<br><br>IT Support Team`,
+        isPhishing: true
+      },
+      {
+        title: "Newsletter Subscription",
+        content: `From: newsletter@company.com<br>Subject: Your Weekly Security Newsletter<br><br>Hi Team,<br><br>Here's your weekly security newsletter with:<br>- Latest security updates<br>- Training schedules<br>- Security tips<br><br>Best regards,<br>Security Team`,
+        isPhishing: false
+      }
+    ];
+
+    function loadQuestion() {
+      if (currentQuestion < questions.length) {
+        const question = questions[currentQuestion];
+        document.getElementById('questionTitle').textContent = question.title;
+        document.getElementById('questionContent').innerHTML = question.content;
+        updateProgress();
+      }
+    }
+
+    function showFeedback(message, isSuccess) {
+      const feedback = document.getElementById('feedback');
+      feedback.textContent = message;
+      feedback.style.background = isSuccess ? 'rgba(0, 255, 136, 0.8)' : 'rgba(255, 51, 102, 0.8)';
+      feedback.style.display = 'block';
+      setTimeout(() => feedback.style.display = 'none', 3000);
+    }
+
+    function updateScore(points) {
+      currentScore += points;
+      document.getElementById('scoreDisplay').textContent = currentScore;
+    }
+
+    function updateProgress() {
+      const progress = (currentQuestion / questions.length) * 100;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+    }
+
+    function checkEmail() {
+      showFeedback("Analyzing email headers...", true);
+      updateScore(25);
+    }
+
+    function analyzeLinks() {
+      showFeedback("Checking for suspicious links...", true);
+      updateScore(25);
+    }
+
+    function scanAttachments() {
+      showFeedback("Scanning attachments for malware...", true);
+      updateScore(25);
+    }
+
+    function verifySource() {
+      showFeedback("Verifying sender's identity...", true);
+      updateScore(25);
+    }
+
+    function markSafe() {
+      const question = questions[currentQuestion];
+      if (!question.isPhishing) {
+        showFeedback("Correct! This is a legitimate email.", true);
+        updateScore(100);
+        nextQuestion();
+      } else {
+        showFeedback("Incorrect! This is a phishing attempt.", false);
+        updateScore(-50);
+        allCorrect = false;
+      }
+    }
+
+    function markPhishing() {
+      const question = questions[currentQuestion];
+      if (question.isPhishing) {
+        showFeedback("Correct! You identified the phishing attempt!", true);
+        updateScore(100);
+        nextQuestion();
+      } else {
+        showFeedback("Incorrect! This is a legitimate email.", false);
+        updateScore(-50);
+        allCorrect = false;
+      }
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else if (allCorrect) {
+        showCertificate();
+      }
+    }
+
+    function showCertificate() {
+      document.getElementById('certDate').textContent = new Date().toLocaleDateString();
+      document.getElementById('certificate').style.display = 'block';
+      createConfetti();
+    }
+
+    function createConfetti() {
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 5000);
+      }
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
+
+
+
+

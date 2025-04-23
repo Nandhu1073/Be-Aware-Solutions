@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberSecure Vishing Challenge</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .container {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+    .btn-group button {
+      padding: 0.75rem 2rem;
+      margin: 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-group button:hover {
+      opacity: 0.9;
+    }
+    .feedback {
+      font-size: 1.25rem;
+      margin-top: 1rem;
+    }
+    .correct {
+      color: green;
+    }
+    .wrong {
+      color: red;
+    }
+    .popup, .badge-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .popup > div, .badge-circle {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      text-align: center;
+      max-width: 90%;
+    }
+    .badge-circle {
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      border: 10px solid gold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>🎧 CyberSecure Vishing Challenge</h1>
+  <div class="container">
+    <p id="call-text">Loading...</p>
+    <div class="btn-group">
+      <button onclick="checkAnswer(true)" style="background-color: #e74c3c; color: white;">Phishing</button>
+      <button onclick="checkAnswer(false)" style="background-color: #27ae60; color: white;">Legit</button>
+    </div>
+    <div id="feedback" class="feedback"></div>
+    <div id="explanation"></div>
+    <div id="score">Score: 0</div>
+  </div>
+
+  <!-- Final Score Popup -->
+  <div class="popup" id="popup" style="display: none;">
+    <div>
+      <h2 id="popup-message"></h2>
+      <p id="popup-subtext"></p>
+      <ul id="skills-earned" style="list-style: none; padding: 0; display: none;">
+        <li>✅ Identifying Caller ID Spoofing</li>
+        <li>✅ Recognizing Urgency Tactics</li>
+        <li>✅ Avoiding Personal Info Traps</li>
+      </ul>
+      <button id="download-btn" onclick="openNamePopup()" style="display:none; margin-top: 1rem; padding: 0.5rem 1rem;">🎓 Download Certificate</button>
+      <br><br>
+      <button onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+  <!-- Name Input Popup -->
+  <div class="popup" id="namePopup" style="display: none;">
+    <div>
+      <h2>🎓 Enter Your Name</h2>
+      <input type="text" id="username" placeholder="Your full name" style="padding: 0.5rem; font-size: 1rem; border-radius: 0.5rem; border: none; width: 80%; margin-bottom: 1rem;">
+      <div style="display: flex; gap: 1rem; justify-content: center;">
+        <button onclick="generateCertificate()">OK</button>
+        <button onclick="closeNamePopup()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certificate Badge -->
+  <div class="badge-container" id="badge" style="display: none;">
+    <div class="badge-circle" id="badge-content">
+      <h2>CyberSecure<br>Badge</h2>
+      <p>🏅 Awarded to</p>
+      <h3 id="badge-name"></h3>
+      <p style="font-size: 0.8rem;">BeAware Academy · April 2025</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    let current = 0;
+    let score = 0;
+
+    const questions = [
+      {
+        text: `Call: Hello, this is John from the IRS. We have detected suspicious activity on your tax returns. Please confirm your social security number to resolve the issue immediately.`,
+        isPhishing: true,
+        explanation: "⚠️ Vishing: Real agencies don’t request sensitive info over unsolicited calls."
+      },
+      {
+        text: `Call: Hi, it’s Amy from HR. Just confirming your availability for the benefits meeting at 3 PM today.`,
+        isPhishing: false,
+        explanation: "✅ Legit: Internal context, no pressure, no personal info requested."
+      },
+      {
+        text: `Call: You've been selected for a $1000 prize! Press 1 now to claim or it will expire.`,
+        isPhishing: true,
+        explanation: "⚠️ Vishing: Pressure tactics and unrealistic offers are major red flags."
+      }
+    ];
+
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById("call-text").innerText = questions[current].text;
+        document.getElementById("feedback").innerText = "";
+        document.getElementById("explanation").innerText = "";
+      } else {
+        checkFinalScore();
+      }
+    }
+
+    function checkAnswer(userChoice) {
+      const correct = questions[current].isPhishing === userChoice;
+      if (correct) {
+        document.getElementById("feedback").innerText = "✅ Correct!";
+        document.getElementById("feedback").className = "feedback correct";
+        score++;
+      } else {
+        document.getElementById("feedback").innerText = "❌ Incorrect.";
+        document.getElementById("feedback").className = "feedback wrong";
+      }
+
+      document.getElementById("explanation").innerText = questions[current].explanation;
+      document.getElementById("score").innerText = "Score: " + score;
+
+      current++;
+      setTimeout(showQuestion, 2500);
+    }
+
+    function checkFinalScore() {
+      document.getElementById("call-text").innerText = `🎯 Game Over! Final Score: ${score} / ${questions.length}`;
+      document.querySelectorAll(".btn-group button").forEach(btn => btn.style.display = "none");
+
+      const popup = document.getElementById("popup");
+      const msg = document.getElementById("popup-message");
+      const subtext = document.getElementById("popup-subtext");
+      const skills = document.getElementById("skills-earned");
+      const downloadBtn = document.getElementById("download-btn");
+
+      if (score === questions.length) {
+        msg.innerText = "🎉 Congratulations!";
+        subtext.innerText = "You've earned the following skills:";
+        skills.style.display = "block";
+        downloadBtn.style.display = "inline-block";
+      } else {
+        msg.innerText = "⚠️ Not Eligible";
+        subtext.innerText = "Try again to earn your certificate.";
+        skills.style.display = "none";
+        downloadBtn.style.display = "none";
+      }
+
+      popup.style.display = "flex";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    function openNamePopup() {
+      document.getElementById("namePopup").style.display = "flex";
+    }
+
+    function closeNamePopup() {
+      document.getElementById("namePopup").style.display = "none";
+    }
+
+    function generateCertificate() {
+      const name = document.getElementById("username").value.trim();
+      if (name === "") {
+        alert("Please enter your name.");
+        return;
+      }
+      document.getElementById("namePopup").style.display = "none";
+      document.getElementById("badge-name").innerText = name;
+      const badgeDiv = document.getElementById("badge");
+      badgeDiv.style.display = "block";
+
+      // Download as PNG
+      setTimeout(() => {
+        html2canvas(document.getElementById("badge-content")).then(canvas => {
+          const link = document.createElement("a");
+          link.download = "CyberBadge_" + name.replace(/\s+/g, "_") + ".png";
+          link.href = canvas.toDataURL();
+          link.click();
+          badgeDiv.style.display = "none";
+        });
+      }, 500);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

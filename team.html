@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team - BeAware Academy</title>
+    <link rel="icon" type="image/x-icon" href="images/Favicon.jpeg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .team-section {
+            padding: 100px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .team-member img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .team-info {
+            padding: 1.5rem;
+        }
+
+        .team-info h3 {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-info h4 {
+            color: #3498db;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-info p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .team-social {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .team-social a {
+            color: #3498db;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .team-social a:hover {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">BeAware Academy</div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-btn">Back to Home</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="team-section">
+            <h2 style="text-align: center; color: #2c3e50; font-size: 2.5rem;">Meet Our Expert Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <img src="images/Nandhakumaar.jpg" alt="Nandhakumaar T">
+                    <div class="team-info">
+                        <h3>Nandhakumaar T</h3>
+                        <h4>CEO</h4>
+                        <p>A visionary leader with over 15 years of experience in cybersecurity. Specializes in strategic planning and innovative security solutions.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="images/Krishna.jpeg" alt="Krishnaganth R L">
+                    <div class="team-info">
+                        <h3>Krishnaganth R L</h3>
+                        <h4>COO</h4>
+                        <p>Operations expert with a strong background in implementing security protocols and managing large-scale cybersecurity projects.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="images/Thiru.jpg" alt="Thiru Vikraman">
+                    <div class="team-info">
+                        <h3>Thiru Vikraman</h3>
+                        <h4>CTO</h4>
+                        <p>Technical genius with expertise in advanced threat detection and prevention. Leads our technical innovation initiatives.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="images/Nandheesh.jpeg" alt="Nandheesh G">
+                    <div class="team-info">
+                        <h3>Nandheesh G</h3>
+                        <h4>Senior Instructor</h4>
+                        <p>Expert in phishing prevention and social engineering awareness. Has trained over 1000 professionals in cybersecurity best practices.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="images/Viswesh.jpg" alt="Viswesh V">
+                    <div class="team-info">
+                        <h3>Viswesh V</h3>
+                        <h4>Senior Instructor</h4>
+                        <p>Specializes in advanced cybersecurity techniques and ethical hacking. Leads our practical training programs and workshops.</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Same footer as main page -->
+    </footer>
+</body>
+</html>
